@@ -1,10 +1,16 @@
 "use client";
 
 import InputComponent from "@/components/FormeElements/InputComponent";
+import ComponentLevelLoader from "@/components/Loader/componentlevel";
+import { GlobalContext } from "@/context";
 import { login } from "@/services/login";
 import { loginFormControls } from "@/utils";
+import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
+
+
 
 const initialFormData = {
   email: "",
@@ -13,6 +19,7 @@ const initialFormData = {
 
 export default function Login() {
   const [formData, setFormData] = useState(initialFormData);
+  const { isAuthUser, setIsAuthUser, user, setUser, componentLevelLoader, setComponentLevelLoader, } = useContext(GlobalContext);
 
   const router = useRouter();
 
@@ -29,10 +36,28 @@ export default function Login() {
   }
 
   async function handleLogin() {
-    const res = await login(formData)
+    const res = await login(formData);
 
     console.log(res);
+
+    if (res.success) {
+      setIsAuthUser(true);
+      setUser(res?.finalData?.user);
+      setFormData(initialFormData);
+      Cookies.set('token', res?.finalData?.token);
+      localStorage.setItem('user', JSON.stringify(res?.finalData?.user));
+    }
+    else {
+      setIsAuthUser(false)
+    }
   }
+
+  console.log(isAuthUser, user);
+
+  useEffect(() => {
+    if (isAuthUser) router.push("/");
+  }, [isAuthUser]);
+
 
   return (
     <div className="bg-white relative">

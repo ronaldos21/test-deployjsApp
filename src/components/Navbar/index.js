@@ -1,52 +1,43 @@
 "use client";
 
 import { GlobalContext } from "@/context";
-import { adminNavOptions, navOptions} from "@/utils";
+import { adminNavOptions, navOptions } from "@/utils";
 import { Fragment, useContext, useEffect } from "react";
-import CommonModule from "../CommonModule";
-//import Cookies from "js-cookie";
-//import { usePathname, useRouter } from "next/navigation";
-//import CartModal from "../CartModal";
+import CommonModal from "../CommonModal";
+import Cookies from "js-cookie";
+import { usePathname, useRouter } from "next/navigation";
+import CartModal from "../CartModal";
 
-const isAdminView = false;
-const isAuthUser = true;
-
-const user = {
-  role: "admin",
-};
-
-function NavItems({ isModalView = false }) {
+function NavItems({ isModalView = false, isAdminView, router }) {
   return (
     <div
-      className={`items-center justify-between w-full md:flex md:w-auto ${
-        isModalView ? "" : "hidden"
-      }`}
+      className={`items-center justify-between w-full md:flex md:w-auto ${isModalView ? "" : "hidden"
+        }`}
       id="nav-items"
     >
       <ul
-        className={`flex flex-col p-4 md:p-0 mt-4 font-medium  rounded-lg md:flex-row md:space-x-8 md:mt-0 md:border-0 bg-white ${
-          isModalView ? "border-none" : "border border-gray-100"
-        }`}
+        className={`flex flex-col p-4 md:p-0 mt-4 font-medium  rounded-lg md:flex-row md:space-x-8 md:mt-0 md:border-0 bg-white ${isModalView ? "border-none" : "border border-gray-100"
+          }`}
       >
         {isAdminView
           ? adminNavOptions.map((item) => (
-              <li
-                className="cursor-pointer block py-2 pl-3 pr-4 text-gray-900 rounded md:p-0"
-                key={item.id}
-                onClick={() => router.push(item.path)}
-              >
-                {item.label}
-              </li>
-            ))
+            <li
+              className="cursor-pointer block py-2 pl-3 pr-4 text-gray-900 rounded md:p-0"
+              key={item.id}
+              onClick={() => router.push(item.path)}
+            >
+              {item.label}
+            </li>
+          ))
           : navOptions.map((item) => (
-              <li
-                className="cursor-pointer block py-2 pl-3 pr-4 text-gray-900 rounded md:p-0"
-                key={item.id}
-                onClick={() => router.push(item.path)}
-              >
-                {item.label}
-              </li>
-            ))}
+            <li
+              className="cursor-pointer block py-2 pl-3 pr-4 text-gray-900 rounded md:p-0"
+              key={item.id}
+              onClick={() => router.push(item.path)}
+            >
+              {item.label}
+            </li>
+          ))}
       </ul>
     </div>
   );
@@ -54,7 +45,6 @@ function NavItems({ isModalView = false }) {
 
 export default function Navbar() {
   const { showNavModal, setShowNavModal } = useContext(GlobalContext);
-  /*
   const {
     user,
     isAuthUser,
@@ -64,13 +54,10 @@ export default function Navbar() {
     setCurrentUpdatedProduct,
     showCartModal,
     setShowCartModal
-    
   } = useContext(GlobalContext);
-  
 
-  //const pathName = usePathname();
-  //const router = useRouter();
-
+  const pathName = usePathname();
+  const router = useRouter();
 
   console.log(currentUpdatedProduct, "navbar");
 
@@ -91,17 +78,17 @@ export default function Navbar() {
   }
 
   const isAdminView = pathName.includes("admin-view");
-  */
+
   return (
     <>
       <nav className="bg-white fixed w-full z-20 top-0 left-0 border-b border-gray-200">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <div
-            //onClick={() => router.push("/")}
+            onClick={() => router.push("/")}
             className="flex items-center cursor-pointer"
           >
             <span className="slef-center text-2xl font-semibold whitespace-nowrap">
-              MockUpWebsite
+              Ecommercery
             </span>
           </div>
           <div className="flex md:order-2 gap-2">
@@ -111,7 +98,7 @@ export default function Navbar() {
                   className={
                     "mt-1.5 inline-block bg-black px-5 py-3 text-xs font-medium upprcase tracking-wide text-white"
                   }
-                  onClick={() => router.push("/account")}
+                  onClick={() => router.push('/account')}
                 >
                   Account
                 </button>
@@ -148,7 +135,7 @@ export default function Navbar() {
             ) : null}
             {isAuthUser ? (
               <button
-                //onClick={handleLogout}
+                onClick={handleLogout}
                 className={
                   "mt-1.5 inline-block bg-black px-5 py-3 text-xs font-medium upprcase tracking-wide text-white"
                 }
@@ -189,14 +176,14 @@ export default function Navbar() {
               </svg>
             </button>
           </div>
-          <NavItems />
+          <NavItems router={router} isAdminView={isAdminView} />
         </div>
       </nav>
-      <CommonModule
+      <CommonModal
         showModalTitle={false}
         mainContent={
           <NavItems
-            //router={router}
+            router={router}
             isModalView={true}
             isAdminView={isAdminView}
           />
@@ -204,6 +191,7 @@ export default function Navbar() {
         show={showNavModal}
         setShow={setShowNavModal}
       />
+      {showCartModal && <CartModal />}
     </>
   );
 }

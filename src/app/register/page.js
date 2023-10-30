@@ -2,9 +2,11 @@
 
 import InputComponent from "@/components/FormeElements/InputComponent";
 import SelectComponent from "@/components/FormeElements/SelectComponent";
+import ComponentLevelLoader from "@/components/Loader/componentlevel";
 import { registerNewUser } from "@/services/register";
 import { registrationFormControls } from "@/utils";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const isRegistered = false;
 
@@ -17,7 +19,10 @@ const initialFormData = {
 
 export default function Register() {
   const [formData, setFormData] = useState(initialFormData);
+  const [isRegistered, setIsRegistered] = useState(false);
+  const { pageLevelLoader, setPageLevelLoader , isAuthUser } = useContext(GlobalContext);
 
+  const router = useRouter()
   console.log(formData);
 
   function isFormValid() {
